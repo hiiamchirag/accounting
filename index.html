@@ -204,33 +204,78 @@
 
   <!-- JAVASCRIPT -->
   <script>
-    // Dark Mode Toggle
-    document.getElementById("darkModeToggle").addEventListener("click", function() {
-      document.body.classList.toggle("dark-mode");
-    });
+  document.addEventListener("DOMContentLoaded", () => {
+    updateDashboard();
+    updateDateTime();
+    autoUpdateActivity();
+    setupDeleteFunctionality();
+  });
 
-    // Search Function
-    document.getElementById("searchInput").addEventListener("input", function() {
-      let filter = this.value.toLowerCase();
-      let items = document.querySelectorAll(".main-nav ul li");
-      items.forEach(item => {
-        let text = item.innerText.toLowerCase();
-        item.style.display = text.includes(filter) ? "block" : "none";
-      });
-    });
+  function updateDashboard() {
+    let sales = JSON.parse(localStorage.getItem("sales")) || [];
+    let totalSales = sales.reduce((sum, sale) => sum + (sale.price * sale.quantity), 0);
 
-    // Auto-updating Activity Feed
+    // Update stored revenue value in localStorage
+    localStorage.setItem("totalSalesRevenue", JSON.stringify(totalSales));
+
+    // Retrieve total items
+    let items = JSON.parse(localStorage.getItem("items")) || [];
+    let totalItems = items.reduce((sum, item) => sum + (item.stock || 0), 0);
+
+    // Update UI with new values
+    document.querySelector(".counter[data-target='15000']").textContent = `$${totalSales.toFixed(2)}`;
+    document.querySelector(".counter[data-target='240']").textContent = totalItems;
+  }
+
+  function updateDateTime() {
+    document.getElementById("currentDateTime").textContent = `Updated: ${new Date().toLocaleString()}`;
+    setTimeout(updateDateTime, 60000); // Update time every 60 sec
+  }
+
+  function autoUpdateActivity() {
+    const updates = [
+      "📦 Stock updated: 'Wheat' - 5kg added",
+      "💰 Sale recorded: $150",
+      "✅ New product added: 'Sugar'",
+      "⚡ Flash Sale: 20% discount on selected items",
+    ];
+    let activityList = document.getElementById("activityList");
+
     setInterval(() => {
-      const updates = [
-        `💰 Sale recorded: $${(Math.random() * 200).toFixed(2)}`,
-        `📦 Stock updated: "Rice" - ${Math.floor(Math.random() * 5) + 1}kg`,
-      ];
-      let li = document.createElement("li");
-      li.innerText = updates[Math.floor(Math.random() * updates.length)];
-      document.getElementById("activityList").prepend(li);
+      let newUpdate = document.createElement("li");
+      newUpdate.textContent = updates[Math.floor(Math.random() * updates.length)];
+      activityList.prepend(newUpdate);
     }, 5000);
+  }
 
-  </script>
+  function setupDeleteFunctionality() {
+    let sales = JSON.parse(localStorage.getItem("sales")) || [];
+    let salesList = document.getElementById("salesList");
+
+    if (salesList) {
+      salesList.innerHTML = ""; // Clear previous list
+      sales.forEach((sale, index) => {
+        let li = document.createElement("li");
+        li.innerHTML = `
+          ${sale.itemName} - ${sale.quantity} pcs - $${sale.price.toFixed(2)}
+          <button class="btn-delete" data-index="${index}">Delete</button>
+        `;
+        salesList.appendChild(li);
+      });
+
+      // Attach delete event listeners
+      document.querySelectorAll(".btn-delete").forEach(button => {
+        button.addEventListener("click", (event) => {
+          let index = event.target.getAttribute("data-index");
+          sales.splice(index, 1);
+          localStorage.setItem("sales", JSON.stringify(sales)); // Update storage
+          updateDashboard(); // Refresh totals
+          setupDeleteFunctionality(); // Re-render list
+        });
+      });
+    }
+  }
+</script>
 
 </body>
 </html>
