@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Credit Sales</title>
+  <style>
+  /* General Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #f4f4f4;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+/* Container */
+.container {
+    max-width: 700px;
+    margin: auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 40px;
+}
+
+/* Table Styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: center;
+}
+
+th {
+    background: #FFD700;
+    color: #222;
+    font-weight: 600;
+}
+
+/* Pay Button */
+.btn-pay {
+    background: green;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.btn-pay:hover {
+    background: darkgreen;
+}
+
+/* Back Button */
+.btn-secondary {
+    background: #444;
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 6px;
+    display: inline-block;
+    text-decoration: none;
+    margin-top: 15px;
+}
+
+.btn-secondary:hover {
+    background: #222;
+}
+</style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Credit Sales</h1>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Merchant</th>
+          <th>Item</th>
+          <th>Quantity</th>
+          <th>Price ($)</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="creditSalesTable"></tbody>
+    </table>
+
+    <a href="index.html" class="btn btn-secondary">Back to Main</a>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const creditSalesTable = document.getElementById('creditSalesTable');
+
+      // Load sales from local storage
+      let sales = JSON.parse(localStorage.getItem('sales')) || [];
+      let items = JSON.parse(localStorage.getItem('items')) || [];
+
+      // Filter credit sales
+      const creditSales = sales.filter(sale => sale.type === 'credit');
+
+      function renderTable() {
+        creditSalesTable.innerHTML = ''; // Clear table
+
+        creditSales.forEach((sale, index) => {
+          const item = items.find(item => item.id === sale.itemId);
+          if (item) {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${sale.merchantName}</td>
+              <td>${item.name}</td>
+              <td>${sale.quantity}</td>
+              <td>$${sale.price.toFixed(2)}</td>
+              <td>${new Date(sale.date).toLocaleDateString()}</td>
+              <td><button class="btn-pay" data-index="${index}">Pay</button></td>
+            `;
+            creditSalesTable.appendChild(row);
+          }
+        });
+
+        // Attach event listeners for payment buttons
+        document.querySelectorAll('.btn-pay').forEach(button => {
+          button.addEventListener('click', (event) => {
+            const index = event.target.getAttribute('data-index');
+            creditSales.splice(index, 1); // Remove from array
+            localStorage.setItem('sales', JSON.stringify(creditSales)); // Update storage
+            renderTable(); // Re-render table
+          });
+        });
+      }
+
+      renderTable(); // Initial render
+    });
+  </script>
+
+</body>
+</html>

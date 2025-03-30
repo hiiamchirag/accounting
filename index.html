@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Goods Accounting</title>
+  <link rel="stylesheet" href="style.css"> 
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"> 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"> 
+  <style>
+    /* General Styling */
+    body {
+      font-family: 'Poppins', sans-serif;
+      transition: background 0.3s, color 0.3s;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 20px;
+    }
+    .tagline {
+      font-size: 1.1rem;
+      color: #555;
+    }
+    
+    /* Dark Mode */
+    body.dark-mode {
+      background: #121212;
+      color: #fff;
+    }
+    .dark-mode header,
+    .dark-mode footer {
+      background: #222;
+    }
+    .dark-mode .main-nav a {
+      color: #ddd;
+    }
+    
+    /* Navigation */
+    .main-nav ul {
+      list-style: none;
+      display: flex;
+      gap: 15px;
+      padding: 0;
+    }
+    .main-nav a {
+      text-decoration: none;
+      padding: 10px 15px;
+      background: #007bff;
+      color: #fff;
+      border-radius: 5px;
+      transition: 0.3s;
+    }
+    .main-nav a:hover {
+      background: #0056b3;
+    }
+
+    /* Search Box */
+    .search-box {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      padding: 8px;
+      border-radius: 5px;
+      width: 300px;
+      background: #fff;
+    }
+    .search-box input {
+      border: none;
+      outline: none;
+      flex: 1;
+      padding: 5px;
+      font-size: 1rem;
+    }
+    .search-box i {
+      color: gray;
+    }
+
+    /* Stats Section */
+    .stats {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      margin-top: 20px;
+    }
+    .stat-box {
+      flex: 1;
+      padding: 15px;
+      background: #f8f9fa;
+      text-align: center;
+      border-radius: 8px;
+    }
+    .dark-mode .stat-box {
+      background: #333;
+    }
+
+    /* Activity Feed */
+    .activity-feed {
+      margin-top: 30px;
+    }
+    .activity-feed ul {
+      list-style: none;
+      padding: 0;
+    }
+    .activity-feed li {
+      background: #e9ecef;
+      margin: 5px 0;
+      padding: 10px;
+      border-radius: 5px;
+    }
+    .dark-mode .activity-feed li {
+      background: #444;
+    }
+
+    /* Footer */
+    footer {
+      margin-top: 30px;
+      padding: 15px;
+      background: #007bff;
+      color: white;
+      text-align: center;
+    }
+    .dark-mode footer {
+      background: #0056b3;
+    }
+
+    /* Dark Mode Button */
+    #darkModeToggle {
+      background: #222;
+      color: #fff;
+      padding: 8px 12px;
+      border: none;
+      cursor: pointer;
+      margin-top: 10px;
+      border-radius: 5px;
+      transition: 0.3s;
+    }
+    .dark-mode #darkModeToggle {
+      background: #f8f9fa;
+      color: #222;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="container">
+      <h1><i class="fas fa-chart-line"></i> Daily Goods Accounting</h1>
+      <p class="tagline">Effortless Transactions & Inventory Management.</p>
+      <button id="darkModeToggle"><i class="fas fa-moon"></i> Toggle Dark Mode</button>
+    </div>
+  </header>
+
+  <!-- SEARCH BAR -->
+  <div class="container">
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Search Pages...">
+      <i class="fas fa-search"></i>
+    </div>
+  </div>
+
+  <!-- NAVIGATION -->
+  <div class="container">
+    <nav class="main-nav">
+      <ul id="navList">
+        <li><a href="items.html"><i class="fas fa-box-open"></i> Manage Items</a></li>
+        <li><a href="sales.html"><i class="fas fa-dollar-sign"></i> Record Sales</a></li>
+        <li><a href="stock.html"><i class="fas fa-warehouse"></i> View Stock</a></li>
+        <li><a href="credit.html"><i class="fas fa-hand-holding-usd"></i> Credit Sales</a></li>
+        <li><a href="totalsales.html"><i class="fas fa-chart-pie"></i> Total Sales</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <!-- STATS SECTION -->
+  <div class="container stats">
+    <div class="stat-box">
+      <i class="fas fa-coins"></i>
+      <h3>Total Revenue</h3>
+      <p>$<span class="counter" data-target="15000">0</span></p>
+    </div>
+    <div class="stat-box">
+      <i class="fas fa-boxes"></i>
+      <h3>Total Items</h3>
+      <p><span class="counter" data-target="240">0</span></p>
+    </div>
+  </div>
+
+  <!-- LIVE ACTIVITY FEED -->
+  <div class="container activity-feed">
+    <h2><i class="fas fa-bell"></i> Recent Activity</h2>
+    <ul id="activityList">
+      <li>✅ New item added: "Sugar" - 10kg</li>
+    </ul>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2024 Daily Goods Accounting. All rights reserved.</p>
+    <p id="currentDateTime"></p>
+  </footer>
+
+  <!-- JAVASCRIPT -->
+  <script>
+    // Dark Mode Toggle
+    document.getElementById("darkModeToggle").addEventListener("click", function() {
+      document.body.classList.toggle("dark-mode");
+    });
+
+    // Search Function
+    document.getElementById("searchInput").addEventListener("input", function() {
+      let filter = this.value.toLowerCase();
+      let items = document.querySelectorAll(".main-nav ul li");
+      items.forEach(item => {
+        let text = item.innerText.toLowerCase();
+        item.style.display = text.includes(filter) ? "block" : "none";
+      });
+    });
+
+    // Auto-updating Activity Feed
+    setInterval(() => {
+      const updates = [
+        `💰 Sale recorded: $${(Math.random() * 200).toFixed(2)}`,
+        `📦 Stock updated: "Rice" - ${Math.floor(Math.random() * 5) + 1}kg`,
+      ];
+      let li = document.createElement("li");
+      li.innerText = updates[Math.floor(Math.random() * updates.length)];
+      document.getElementById("activityList").prepend(li);
+    }, 5000);
+
+  </script>
+
+</body>
+</html>

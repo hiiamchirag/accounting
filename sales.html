@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Record Sales</title>
+  <style>
+  /* Import Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
+/* General Styles */
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #f4f4f4;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+/* Container Styling */
+.container {
+    max-width: 600px;
+    margin: auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 40px;
+}
+
+/* Heading */
+h1 {
+    color: #222;
+    font-weight: 600;
+}
+
+/* Form Styling */
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+label {
+    font-weight: 500;
+}
+
+/* Input Fields */
+input, select {
+    width: 90%;
+    padding: 12px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: 0.3s ease;
+    background: #fff;
+    text-align: center;
+}
+
+input:focus, select:focus {
+    border-color: #FFD700;
+    outline: none;
+}
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    padding: 12px 18px;
+    font-size: 16px;
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+    width: 90%;
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, #FFD700, #FFA500);
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(255, 165, 0, 0.5);
+}
+
+.btn-primary:hover {
+    background: linear-gradient(45deg, #FFA500, #FFD700);
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: #444;
+    color: #fff;
+}
+
+.btn-secondary:hover {
+    background: #222;
+}
+
+/* Dark Mode */
+.dark-mode {
+    background: #222;
+    color: #fff;
+}
+
+.dark-mode .container {
+    background: #333;
+}
+
+.dark-mode input, .dark-mode select {
+    background: #444;
+    color: #fff;
+}
+
+.dark-mode .btn-primary {
+    background: linear-gradient(45deg, #DAA520, #FFD700);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        width: 90%;
+        padding: 15px;
+    }
+
+    input, select {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .btn {
+        padding: 10px;
+        font-size: 14px;
+    }
+}
+</style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>Record Sales</h1>
+
+    <form id="salesForm">
+      <label for="saleType">Sale Type:</label>
+      <select id="saleType" required>
+        <option value="cash">Cash</option>
+        <option value="credit">Credit</option>
+      </select>
+
+      <div id="creditSaleFields" style="display: none;">
+        <label for="merchantName">Merchant Name:</label>
+        <input type="text" id="merchantName">
+      </div>
+
+      <label for="saleItem">Item:</label>
+      <select id="saleItem" required></select>
+
+      <label for="saleQuantity">Quantity:</label>
+      <input type="number" id="saleQuantity" min="1" required>
+
+      <button type="submit" class="btn btn-primary">Record Sale</button>
+    </form>
+
+    <a href="index.html" class="btn btn-secondary">Back to Main</a>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const salesForm = document.getElementById('salesForm');
+      const saleTypeSelect = document.getElementById('saleType');
+      const creditSaleFields = document.getElementById('creditSaleFields');
+      const saleItemSelect = document.getElementById('saleItem');
+
+      let items = JSON.parse(localStorage.getItem('items')) || [];
+
+      function populateItemDropdown() {
+        saleItemSelect.innerHTML = '';
+        items.forEach(item => {
+          const option = document.createElement('option');
+          option.value = item.id;
+          option.textContent = item.name;
+          saleItemSelect.appendChild(option);
+        });
+      }
+      populateItemDropdown();
+
+      saleTypeSelect.addEventListener('change', () => {
+        creditSaleFields.style.display = saleTypeSelect.value === 'credit' ? 'block' : 'none';
+      });
+
+      salesForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const saleType = saleTypeSelect.value;
+        const merchantName = document.getElementById('merchantName').value;
+        const saleItemId = parseInt(saleItemSelect.value);
+        const saleQuantity = parseInt(document.getElementById('saleQuantity').value);
+
+        if (isNaN(saleItemId) || isNaN(saleQuantity) || saleQuantity <= 0) {
+          alert('Please enter valid sale details.');
+          return;
+        }
+
+        if (saleType === 'credit' && !merchantName) {
+          alert('Please enter merchant name for credit sale.');
+          return;
+        }
+
+        const item = items.find(item => item.id === saleItemId);
+        if (!item || saleQuantity > item.stock) {
+          alert('Not enough stock available.');
+          return;
+        }
+
+        item.stock -= saleQuantity;
+        localStorage.setItem('items', JSON.stringify(items));
+
+        let sales = JSON.parse(localStorage.getItem('sales')) || [];
+        sales.push({
+          id: Date.now(),
+          type: saleType,
+          merchantName: merchantName,
+          itemId: saleItemId,
+          quantity: saleQuantity,
+          price: item.price,
+          date: new Date().toISOString()
+        });
+
+        localStorage.setItem('sales', JSON.stringify(sales));
+
+        salesForm.reset();
+        populateItemDropdown();
+        creditSaleFields.style.display = 'none';
+        alert('Sale recorded successfully.');
+      });
+    });
+  </script>
+
+</body>
+</html>
