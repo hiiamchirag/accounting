@@ -4,126 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Daily Goods Accounting</title>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Didot&display=swap"> 
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Great+Vibes&display=swap"> 
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <style>
-    /* General Styling */
-    body {
-      font-family: 'Playfair Display', serif;
-      background: linear-gradient(135deg, #1e3c72, #2a5298);
-      color: #fff;
-      margin: 0;
-      padding: 0;
-      transition: all 0.3s ease;
-    }
-    .container {
-      max-width: 1100px;
-      margin: auto;
-      padding: 20px;
-    }
-
-    /* Header */
-    header {
-      background: rgba(255, 255, 255, 0.1);
-      padding: 30px;
-      text-align: center;
-      border-radius: 15px;
-      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-      backdrop-filter: blur(10px);
-      position: relative;
-    }
-    .company-name {
-      position: absolute;
-      top: 10px;
-      right: 20px;
-      font-size: 2rem;
-      font-weight: bold;
-      color: #E5E4E2;
-      font-family: 'Didot', serif;
-      text-shadow: 3px 3px 7px rgba(229, 228, 226, 0.8);
-    }
-
-    /* Navigation */
-    .main-nav ul {
-      list-style: none;
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      padding: 0;
-      margin-top: 15px;
-      flex-wrap: wrap;
-    }
-    .main-nav a {
-      text-decoration: none;
-      padding: 12px 20px;
-      background: rgba(255, 255, 255, 0.3);
-      color: #fff;
-      border-radius: 12px;
-      transition: 0.3s;
-      backdrop-filter: blur(10px);
-      font-weight: 700;
-    }
-    .main-nav a:hover {
-      background: rgba(255, 255, 255, 0.6);
-      transform: scale(1.05);
-    }
-
-    /* Search Box - Premium Glassmorphism */
-    .search-box {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 20px 0;
-      position: relative;
-    }
-    .search-box input {
-      width: 300px;
-      padding: 12px;
-      border: none;
-      border-radius: 25px;
-      outline: none;
-      text-align: center;
-      font-size: 1rem;
-      background: rgba(255, 255, 255, 0.2);
-      backdrop-filter: blur(10px);
-      color: white;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-      transition: 0.3s ease;
-    }
-    .search-box input::placeholder {
-      color: rgba(255, 255, 255, 0.6);
-    }
-    .search-box input:focus {
-      background: rgba(255, 255, 255, 0.3);
-      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
-    }
-    .search-box i {
-      position: absolute;
-      right: 20px;
-      color: rgba(255, 255, 255, 0.7);
-    }
-
-    /* Footer */
-    footer {
-      margin-top: 30px;
-      padding: 20px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 15px;
-      font-weight: 700;
-      text-align: center;
-    }
-    .footer-links {
-      margin-top: 10px;
-    }
-    .footer-links a {
-      color: #fff;
-      text-decoration: none;
-      margin: 0 10px;
-    }
-    .footer-links a:hover {
-      text-decoration: underline;
-    }
-  </style>
+  
+   
 </head>
 <body>
 
@@ -133,6 +17,60 @@
     <p class="tagline">Managing your finances, simplified.</p>
     <div class="company-name">Powered by Jaiswal Corporation</div>
   </header>
+
+  <!-- SEARCH BAR -->
+  <div class="container">
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Search Pages..." onkeyup="searchFunction()">
+      <i class="fas fa-search"></i>
+    </div>
+  </div>
+
+  <!-- NAVIGATION -->
+  <div class="container">
+    <nav class="main-nav">
+      <ul id="navList">
+        <li><a href="items.html"><i class="fas fa-box-open"></i> Manage Items</a></li>
+        <li><a href="sales.html"><i class="fas fa-dollar-sign"></i> Record Sales</a></li>
+        <li><a href="stock.html"><i class="fas fa-warehouse"></i> View Stock</a></li>
+        <li><a href="credit.html"><i class="fas fa-hand-holding-usd"></i> Credit Sales</a></li>
+        <li><a href="totalsales.html"><i class="fas fa-chart-pie"></i> Total Sales</a></li>
+      </ul>
+    </nav>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2024 Daily Goods Accounting. All rights reserved.</p>
+    <p id="currentDateTime"></p>
+    <p>"Master your finances, master your success."</p>
+    <p>Contact us at: <a href="mailto:support@jaiswalcorporation.com" style="color:#E5C100;">support@jaiswalcorporation.com</a></p>
+    <div class="footer-links">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Service</a>
+      <a href="#">Support</a>
+      <a href="#">Careers</a>
+      <a href="#">Investor Relations</a>
+    </div>
+  </footer>
+
+  <!-- JAVASCRIPT -->
+  <script>
+    function updateDateTime() {
+      document.getElementById("currentDateTime").textContent = `Last updated: ${new Date().toLocaleString()}`;
+      setTimeout(updateDateTime, 60000);
+    }
+    updateDateTime();
+
+    function searchFunction() {
+      let input = document.getElementById("searchInput").value.toLowerCase();
+      let links = document.querySelectorAll(".main-nav ul li");
+      links.forEach(link => {
+        let text = link.textContent.toLowerCase();
+        link.style.display = text.includes(input) ? "block" : "none";
+      });
+    }
+  </script>
 
 </body>
 </html>
