@@ -114,6 +114,7 @@
         <thead>
           <tr>
             <th>Item</th>
+            <th>Price</th>
             <th>Stock</th>
             <th>Status</th>
             <th>Action</th>
@@ -139,6 +140,7 @@
           let row = document.createElement("tr");
           row.innerHTML = `
             <td>${item.name}</td>
+            <td>$${item.price.toFixed(2)}</td>
             <td>${item.stock}</td>
             <td><span class="status ${statusClass}">${statusText}</span></td>
             <td><button class="btn btn-delete" onclick="deleteItem(${index})">Delete</button></td>
